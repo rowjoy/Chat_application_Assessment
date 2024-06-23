@@ -2,7 +2,6 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    id 'com.google.gms.google-services'
 }
 
 def localProperties = new Properties()
@@ -24,8 +23,8 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.kawaii.chatapplication"
-    compileSdk 34
+    namespace "com.example.chatapplication"
+    compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -43,10 +42,10 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.kawaii.chatapplication"
+        applicationId "com.example.chatapplication"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -65,8 +64,4 @@ flutter {
     source '../..'
 }
 
-dependencies {
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-  implementation platform('com.google.firebase:firebase-bom:33.1.1')
-  implementation 'com.google.firebase:firebase-analytics'
-}
+dependencies {}
