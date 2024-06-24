@@ -29,6 +29,7 @@ dependencies:
   #State management package ------------------------------
   flutter_riverpod: ^2.5.1 # A reactive caching and data-binding framework [natively supporting advanced scenarios, such as pull-to-refresh]
   flutter_hooks: ^0.20.5 # Hooks are a new kind of object that manage the life-cycle of a Widget.[They exist for one reason: increase the code-sharing between widgets by removing duplicates].
+  hooks_riverpod: ^2.5.1 
   go_router: ^14.2.0 # declarative routing package for Flutter that uses the Router API to provide a convenient, url-based API for navigating between different screens.
 
   #local storage--------------------------
