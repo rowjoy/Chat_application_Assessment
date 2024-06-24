@@ -18,6 +18,7 @@ class ChatViews extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+   // print("peerId $peerId  peerEmail $peerEmail  chatRoomID$chatRoomID userName $userName");
     final chatService = ref.watch(chatServiceProvider);
     final authState = ref.watch(authStateProvider);
     final user = authState.asData?.value;
@@ -38,10 +39,14 @@ class ChatViews extends HookConsumerWidget {
                   return Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.connectionState == ConnectionState.active){
-                  final messagenotify =  snapshot.data!.docs;
-                  final lastMessage = messagenotify.isNotEmpty ? messagenotify.first : null;
-                  if (lastMessage != null &&  lastMessage["email"] != user!.email){
+                   final messagenotify =  snapshot.data!.docs;
+                   final lastMessage = messagenotify.isNotEmpty ? messagenotify.last : null;
+                  //  print("Email 1 ${lastMessage!["email"]}");
+                  //  print("Email2 ${user!.email}");
+                  if ( lastMessage !=  null && lastMessage["email"].toString() != user!.email.toString()){
                      NotificationServices().showNotification(title:  lastMessage['message'], dateTime: DateTime.now().toString(), payload: lastMessage["sendby"]);
+                  }else {
+                    print("Email same");
                   }
                   
                 }
@@ -55,7 +60,7 @@ class ChatViews extends HookConsumerWidget {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
-                    final isMe = message['email'] != user!.email;
+                    final isMe = message['email'] == user!.email;
                     
                     return ListTile(
                       title: Align(
@@ -90,10 +95,10 @@ class ChatViews extends HookConsumerWidget {
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () async {
-                    
+                    print("peerEmail$peerEmail");
                     if (messageController.text.isNotEmpty) {
                       // await chatService.sendMessage(user!.uid, peerId, messageController.text);
-                      await chatService.sendMessage(chatRoomID, messageController.text, userName, peerEmail);
+                      await chatService.sendMessage(chatRoomID, messageController.text, userName, user!.email.toString());
                       messageController.clear();
                     }
                   },
