@@ -2,6 +2,8 @@
 
 import 'package:chatapplication/app/views/chat_views/chat_views.dart';
 import 'package:chatapplication/app/views/login_views/login_views.dart';
+import 'package:chatapplication/core/utils/keys.dart';
+import 'package:chatapplication/core/utils/shared_preferen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../views/userlist_views/user_list_views.dart';
@@ -10,14 +12,17 @@ class AppRoute {
   final GoRouter router = GoRouter(
     routes: [
       GoRoute(
+        name: '/',
         path: '/',
         builder: (context, state) => LoginViews(),
       ),
       GoRoute(
+        name: '/userListViews',
         path: '/userListViews',
         builder: (context, state) => UserListViews(),
       ),
       GoRoute(
+        name: '/chatViews',
         path: '/chatViews/:peerId/:peerEmail/:chatRoomID/:userName',
         builder: (context, state) {
            final String peerId = state.pathParameters["peerId"]!;
@@ -25,13 +30,16 @@ class AppRoute {
            final String chatRoomID = state.pathParameters["chatRoomID"]!;
            final String userName = state.pathParameters["userName"]!;
            return ChatViews(peerId: peerId, peerEmail: peerEmail, chatRoomID: chatRoomID, userName: userName);
-
         },
       ),
     ],
     redirect: (context, state) {
-      
-      return null;
+      final tocken = SharedPreferencesHelper.getString(AppKeys.authTocken);
+      if (tocken != null){
+         return '/userListViews';
+      }else {
+        return '/';
+      }
     },
   );
 }

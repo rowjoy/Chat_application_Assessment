@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'app/views/login_views/login_views.dart';
+import 'app/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -10,14 +10,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Chat App',
-      theme: ThemeData(
+    // return MaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   title: 'Chat App',
+    //   theme: ThemeData(
+    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    //     useMaterial3: true,
+    //   ),
+    //    home: LoginViews(),
+    // );
+    return MaterialApp.router(
+       debugShowCheckedModeBanner: false,
+       title: 'Chat App',
+       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
-      ),
-       home: LoginViews(),
+       ),
+       routerConfig: AppRoute().router,
+      //  routeInformationParser:AppRoute().router.routeInformationParser,
+      //  routerDelegate: AppRoute().router.routerDelegate,
+      //  routeInformationProvider: AppRoute().router.routeInformationProvider,
+      //  backButtonDispatcher: AppRoute().router.backButtonDispatcher,
     );
   }
 }
