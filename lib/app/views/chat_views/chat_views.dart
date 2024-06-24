@@ -32,7 +32,6 @@ class ChatScreen extends HookConsumerWidget {
             child: StreamBuilder<QuerySnapshot>(
               stream: chatService.getMessagesBetween(user!.uid, peerId),
               builder: (context, snapshot) {
-                print(snapshot.data);
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }

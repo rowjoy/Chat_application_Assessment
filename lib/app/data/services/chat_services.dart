@@ -17,7 +17,7 @@ class ChatService {
 
   Stream<QuerySnapshot> getMessagesBetween(String userId, String peerId) {
     final responce = chatCollection
-        .where('participants', arrayContains: peerId)
+        .where('participants', arrayContains: userId)
         .orderBy('timestamp', descending: true)
         .snapshots();
     return responce;
