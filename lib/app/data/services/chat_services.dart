@@ -1,38 +1,26 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// Firestore Provider
-final firestoreProvider = Provider<FirebaseFirestore>((ref) {
-  return FirebaseFirestore.instance;
-});
 
-// Chat Collection Provider
-final chatCollectionProvider = Provider<CollectionReference>((ref) {
-  return ref.watch(firestoreProvider).collection('chats');
-});
 
 class ChatService {
   final CollectionReference chatCollection;
   ChatService(this.chatCollection);
 
-  Stream<QuerySnapshot> getMessagesBetween(String userId, String peerId) {
-    final responce = chatCollection
-        .where('participants', arrayContains: userId)
-        .orderBy('timestamp', descending: true)
-        .snapshots();
-    return responce;
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot> getMessages(String chatRoomId) {
+     final responce = firebaseFirestore.collection("chatRoom").doc(chatRoomId).collection("chats").orderBy("time", descending: false).snapshots();
+     return responce;
   }
 
-  Future<void> sendMessage(String userId, String peerId, String message) async {
-    await chatCollection.add({
-      'participants': [userId, peerId],
-      'userId': userId,
-      'message': message,
-      'timestamp': FieldValue.serverTimestamp(),
+  Future<void> sendMessage( String chatRoomId, String message, String username, String email) async {
+    await firebaseFirestore.collection("chatRoom").doc(chatRoomId).collection("chats").add({
+       "sendby": username,
+       "message" : message,
+       "time" : FieldValue.serverTimestamp(),
+       "email": email,
     });
   }
 }
 
-final chatServiceProvider = Provider<ChatService>((ref) {
-  return ChatService(ref.watch(chatCollectionProvider));
-});
