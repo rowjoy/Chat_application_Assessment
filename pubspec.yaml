@@ -25,6 +25,8 @@ dependencies:
   cloud_firestore: ^5.0.1
   #firebase_auth to sign in with email and password
   firebase_auth: ^5.1.0 
+  # local notification setup 
+  flutter_local_notifications: ^17.1.2
 
   #State management package ------------------------------
   flutter_riverpod: ^2.5.1 # A reactive caching and data-binding framework [natively supporting advanced scenarios, such as pull-to-refresh]

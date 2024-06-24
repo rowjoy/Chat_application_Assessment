@@ -5,21 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../data/services/auth_provider.dart';
-import '../../data/services/chat_services.dart';
+import '../../data/provider/providers.dart';
+import '../../data/services/notification_services.dart';
 
-class ChatScreen extends HookConsumerWidget {
+class ChatViews extends HookConsumerWidget {
   final String peerId;
   final String peerEmail;
+  final String chatRoomID;
+  final String userName;
 
-  const ChatScreen({required this.peerId, required this.peerEmail});
+  const ChatViews({required this.peerId, required this.peerEmail,required this.chatRoomID,required this.userName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatService = ref.watch(chatServiceProvider);
     final authState = ref.watch(authStateProvider);
     final user = authState.asData?.value;
-
     final messageController = useTextEditingController();
 
     return Scaffold(
@@ -30,19 +31,32 @@ class ChatScreen extends HookConsumerWidget {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: chatService.getMessagesBetween(user!.uid, peerId),
+              //stream: chatService.getMessagesBetween(user!.uid, peerId),
+              stream:  chatService.getMessages(chatRoomID),
               builder: (context, snapshot) {
-                print(snapshot.data);
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }
+                if (snapshot.connectionState == ConnectionState.active){
+                  final messagenotify =  snapshot.data!.docs;
+                  final lastMessage = messagenotify.isNotEmpty ? messagenotify.first : null;
+                  if (lastMessage != null &&  lastMessage["email"] != user!.email){
+                     NotificationServices().showNotification(title:  lastMessage['message'], dateTime: DateTime.now().toString(), payload: lastMessage["sendby"]);
+                  }
+                  
+                }
                 final messages = snapshot.data!.docs;
                 return ListView.builder(
-                  reverse: true,
+                  reverse: false,
+                  shrinkWrap: true,
+                  //dragStartBehavior: DragStartBehavior.down,
+
+                  physics: ScrollPhysics(),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
-                    final isMe = message['userId'] == user.uid;
+                    final isMe = message['email'] != user!.email;
+                    
                     return ListTile(
                       title: Align(
                         alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -52,8 +66,7 @@ class ChatScreen extends HookConsumerWidget {
                             color: isMe ? Colors.blue : Colors.grey[300],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text(
-                            message['message'],
+                          child: Text( message['message'] ,
                             style: TextStyle(color: isMe ? Colors.white : Colors.black),
                           ),
                         ),
@@ -77,8 +90,10 @@ class ChatScreen extends HookConsumerWidget {
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () async {
+                    
                     if (messageController.text.isNotEmpty) {
-                      await chatService.sendMessage(user.uid, peerId, messageController.text);
+                      // await chatService.sendMessage(user!.uid, peerId, messageController.text);
+                      await chatService.sendMessage(chatRoomID, messageController.text, userName, peerEmail);
                       messageController.clear();
                     }
                   },
