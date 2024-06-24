@@ -33,10 +33,13 @@ samples, guidance on mobile development, and a full API reference.
   # Firebase package--------------------------
   ->package is essential for initializing Firebase in any Flutter application
   firebase_core: ^3.1.0 
+  
   ->package in Flutter allows you to interact with Firebase Firestore
   cloud_firestore: ^5.0.1
+  
   ->firebase_auth to sign in with email and password
   firebase_auth: ^5.1.0 
+  
   ->local notification setup [show notification localy]
   flutter_local_notifications: ^17.1.2
 
