@@ -1,15 +1,18 @@
 
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors, avoid_print
 
+import 'package:chatapplication/core/utils/app_alert.dart';
+import 'package:chatapplication/core/utils/keys.dart';
+import 'package:chatapplication/core/utils/shared_preferen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/extra_colors.dart';
 import '../../../core/utils/validator.dart';
 import '../../data/services/auth_services.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
-import '../userlist_views/user_list_views.dart';
 
 class LoginBody {
   late AuthService authService;
@@ -52,11 +55,14 @@ class LoginBody {
                         isloading.value = true;
                         try {
                             final responce =  await authService.signInWithEmailAndPassword( emailController.text, passwordController.text);
-                            if(responce!.email != null){
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UserListViews()));
+                            print("uid : ${responce!.uid}");
+                            await SharedPreferencesHelper.setString(AppKeys.authTocken, responce.uid);
+                            if(responce.email != null){
+                              context.replace('/userListViews');
                             }
                           }catch(e){
-                             await authService.signUpWithEmailAndPassword(emailController.text, passwordController.text);
+                            AppAlert(title: "$e", context: context).flutterShowSnackber();
+                            // await authService.signUpWithEmailAndPassword(emailController.text, passwordController.text);
                         }
                         isloading.value = false;
                      }
